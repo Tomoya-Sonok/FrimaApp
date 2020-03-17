@@ -34,24 +34,28 @@ Things you may want to cover:
 |furigana_first|string|null: false|
 |furigana_last|string|null: false|
 |birthdate|date|null: false|
-|postal_code|integer|null: false|
-|tel|integer|
+|tell|integer|
 
 ### Association
 - has_many :items
 - has_one :address
 
 
+
 ## addressesテーブル
 |Column|Type|Options|
 |------|----|-------|
 |prefecture|integer|null: false|
+|postal_code|integer|null: false|
 |city|string|null: false|
 |number|string|null: false|
 |building|string|
+|user_id|bigint|foreign_key: true|
 
 ### Association
 - belongs_to :user
+
+
 
 ## itemsテーブル
 |Column|Type|Options|
@@ -59,20 +63,24 @@ Things you may want to cover:
 |name|string|null: false|
 |description|text|null: false|
 |price|integer|null: false|
-|image|string|null: false|
-|condition|integer|
+|condition|integer|null: false|
 |fee|integer|null: false|
-|area|integer|null: false|
+|area|string|null: false|
 |shipping_days|integer|null: false|
-|brand_id|integer|foreign_key: true|
+|purchase_id|integer|foreign_key: true|
+|brand_id|bigint|foreign_key: true|
+|user_id|bigint|foreign_key: true|
+|category_id|bigint|foreign_key: true|
 
 ### Association
-- belongs_to :user
-- belongs_to :category
-- belongs_to :brand
+- belongs_to :brand, optional: true
+- belongs_to :user, optional: true
+- has_many :images, dependent: :destroy
+- belongs_to :category, optional: true
 
 
-### brandテーブル
+
+### brandsテーブル
 |Column|Type|Options|
 |------|----|-------|
 |name|string|
@@ -81,11 +89,35 @@ Things you may want to cover:
 - has_many :items
 
 
-## Categoriesテーブル
+
+## categoriesテーブル
 |Column|Type|Options|
 |------|----|-------|
-|name|string|null: false, unique: true|
-|ancestry|string|null: false|
+|name|string|null: false|
+|ancestry|string|
 
 ### Association
 - has_many :items
+- has_ancestry
+
+
+
+## imagesテーブル
+|Column|Type|Options|
+|------|----|-------|
+|content|string|null: false|
+|item_id|bigint|foreign_key: true|
+
+### Association
+- belongs_to :item, optional: true
+
+
+
+## cardsテーブル
+|Column|Type|Options|
+|------|----|-------|
+|user_id|integer|null: false|
+|customer_id|string|null: false|
+|card_id|string|null: false|
+
+### Association

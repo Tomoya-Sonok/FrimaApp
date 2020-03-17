@@ -1,4 +1,9 @@
 = render partial: "header"
+- breadcrumb :item_show
+= render "layouts/breadcrumbs"
+.noticeContainer
+  -if flash.notice.present?
+    .alert.alert-success= flash.notice
 .show
   .show__main
     .content
@@ -8,14 +13,18 @@
             = @item.name
           .item__img
             %ul.item__img__list
-              %li.item__img__list__top
-                = image_tag @images.first[:content], class:"img-top"
-                - if @images.length{[:content] >= 2 }
-                  %ul.bottom
-                    .bottom__list
-                      - @images.each do |images|
-                        %li
-                          = image_tag images[:content], class:"img-bottom"
+              .swiper-container.swiper1
+                .swiper-wrapper
+                  - @images.each do |images|
+                    = image_tag asset_path(images[:content]), class:"swiper-slide"
+                .swiper-button-prev.prev1
+                .swiper-button-next.next1
+                .swiper-pagination
+                  
+              .swiper-container.swiper2
+                .swiper-wrapper
+                  - @images.each do |images|
+                    = image_tag asset_path(images[:content]), class:"swiper-slide"
           .item__price 
             %span 
               = @item.price 
@@ -34,15 +43,20 @@
               %button{type: "button", class:'item__delete'}
                 この商品を削除する
           -else
-            =link_to confirm_item_path do
-              %button{type: "button", class:'item__purchase'}
-                購入画面に進む
+            -if @item.purchase_id.present?
+              .item__purchase#item__purchase--sold
+                売り切れました
+            -else 
+              =link_to confirm_item_path do
+                %button{type: "button", class:'item__purchase'}
+                  購入画面に進む
           .item__description= @item.description
           %table{:border => "1"}
             %tbody
               %tr 
                 %th 出品者
-                %td hoge
+                %td 
+                  = @user.nickname
               %tr
                 %th カテゴリ
                 %td
@@ -54,9 +68,6 @@
               %tr
                 %th ブランド
                 %td= @brand.name
-              %tr
-                %th 商品のサイズ
-                %td
               %tr
                 %th 商品の状態
                 %td= @item.condition
@@ -78,15 +89,51 @@
               %li.option__report-btn2
                 %i 🇯🇵
                 不適切な商品の通報 
-        .commentBox
-          = form_with model: @comments, class: "comment-new" do |f|
-            = f.text_area :text, class: "comment-body"
+        .commentsContainer
+          .comments
+            - if @comments
+              - @comments.each do |comment|
+                -if comment.user_id ==  current_user.id
+                  %ul
+                    %li.comment
+                      .comment__myname
+                        = link_to comment.user.nickname, "/users/#{comment.user_id}"
+                      .comment__mytext
+                        = simple_format(comment.text)
+                        .comment__mytext__time
+                          = icon('far', 'clock')
+                          = render partial: "notification", locals: { comment: comment }
+                -else
+                  %ul
+                    %li.comment
+                      -if comment.user_id == @item.user.id
+                        .comment__name
+                          = link_to "#{comment.user.nickname}(出品者)", "/users/#{comment.user_id}"
+                      -else
+                        .comment__name
+                          = link_to comment.user.nickname, "/users/#{comment.user_id}"
+                      .comment__text
+                        = simple_format(comment.text)
+                        .comment__text__time
+                          = icon('far', 'clock')
+                          = render partial: "notification", locals: { comment: comment }
+          .commentBox
             %p.caution
               相手のことを考え丁寧なコメントを心がけましょう。
-              %br
               不快な言葉遣いなどは利用制限や退会処分となることがあります。
-              %br
-            = f.submit "●コメントする", class: "comment-btn"
+            - if current_user
+              -if @item.purchase_id.present?
+                = form_with(model: [@item, @comment], local: true) do |f|
+                  = f.text_area :text, class: "comment-body", id: "comment-body--sold"
+                  .comment-btn#comment-btn--sold
+                    売り切れのためコメントできません
+              -else
+                = form_with(model: [@item, @comment], local: true) do |f|
+                  = f.text_area :text, class: "comment-body"
+                  = f.submit "コメントする", class: "comment-btn"
+            - else
+              %strong
+                %p ※※※ コメントの投稿には新規登録/ログインが必要です ※※※
       %ul.switch
         %li.switch__before
           %i <
@@ -97,4 +144,3 @@
       .other
         レディースをもっと見る
 = render partial: "footer"
-        

@@ -1,20 +1,4 @@
-.header
-  .header__headerBox
-    .header__headerBox__headerMain
-      .header__headerBox__headerMain__logo
-        = link_to image_tag('logo.png'), root_path
-      .header__headerBox__headerMain__searchForm
-        %form
-          %input{ placeholder: "キーワードから探す"}
-          %button{type: "submit"}
-            .btnIcon
-              = image_tag "icon-search 1.png"   
-    .header__headerBox__nav
-      %ul.header__headerBox__nav__leftMenu
-        %li.header__headerBox__nav__leftMenu__list--first
-          = link_to "カテゴリー","#", id: "catBtn"
-        %li.header__headerBox__nav__leftMenu__list
-          = link_to "ブランド","#", id: "brandBtn"
+= render partial: "items/header"
 .single-container
   .single-container__single-main
     .single-container__single-main__l-single-container
@@ -22,8 +6,8 @@
         新規会員登録
       .single-container__single-main__l-single-container__l-single-head-registration-form
         .single-container__single-main__l-single-container__l-single-head-registration-form__l-single-content
-          = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
-            = render "devise/shared/error_messages", resource: resource
+          = form_for(@user, url: registration_path(resource_name)) do |f|
+            = render "devise/shared/error_messages", resource: @user
             .field
               = f.label :ニックネーム, class:'label-weight'
               %span.need
@@ -78,9 +62,10 @@
               %span.need
                 必須
               %br/
-              = f.date_select :birthdate, autocomplete: "birthdate"
+              = f.date_select :birthdate, autocomplete: "birthdate",start_year: 1930,end_year: (Time.now.year - 10),default: Date.new(1989, 1, 1)
             .actions
-              = f.submit "新規登録",class: 'submit-form'
-
+              = f.submit "Next"
           = render "devise/shared/links"
 = render partial: "items/footer"
+
+

@@ -10,13 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_11_050937) do
+ActiveRecord::Schema.define(version: 2020_03_16_092642) do
 
   create_table "addresses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "prefecture", null: false
     t.string "city", null: false
     t.string "number", null: false
     t.string "building"
+    t.integer "postal_code", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_addresses_on_user_id"
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -39,9 +42,21 @@ ActiveRecord::Schema.define(version: 2020_03_11_050937) do
     t.index ["ancestry"], name: "index_categories_on_ancestry"
   end
 
+  create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.bigint "user_id", null: false
+    t.text "text", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_id"], name: "index_comments_on_item_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
   create_table "images", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "content", null: false
+    t.string "content"
     t.bigint "item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_images_on_item_id"
   end
 
@@ -49,13 +64,13 @@ ActiveRecord::Schema.define(version: 2020_03_11_050937) do
     t.string "name", null: false
     t.text "description", null: false
     t.integer "price", null: false
-    t.integer "condition"
+    t.integer "condition", null: false
     t.integer "fee", null: false
-    t.integer "area", null: false
+    t.string "area", null: false
     t.integer "shipping_days", null: false
-    t.string "customer_id"
-    t.bigint "brand_id"
+    t.string "purchase_id"
     t.bigint "user_id"
+    t.bigint "brand_id"
     t.bigint "category_id", null: false
     t.index ["brand_id"], name: "index_items_on_brand_id"
     t.index ["category_id"], name: "index_items_on_category_id"
@@ -81,6 +96,9 @@ ActiveRecord::Schema.define(version: 2020_03_11_050937) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "addresses", "users"
+  add_foreign_key "comments", "items"
+  add_foreign_key "comments", "users"
   add_foreign_key "items", "brands"
   add_foreign_key "items", "categories"
   add_foreign_key "items", "users"

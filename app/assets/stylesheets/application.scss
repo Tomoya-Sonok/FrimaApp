@@ -20,3 +20,16 @@
  @import "users";
  @import "confirm";
 
+ .breadcrumbs{
+   padding: 5px 15px 15px;
+   .breadcrumbs-list{
+     a{
+      text-decoration: none;
+      color: black;
+     }
+     a:hover{
+      color: #666666;
+      border-bottom: 1px #666666;
+     }
+   }
+ }

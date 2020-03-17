@@ -3,7 +3,7 @@
     - if user_signed_in?
       = link_to item_path(item) do
         .itemList--image
-          -if item.customer_id.present?
+          -if item.purchase_id.present?
             = image_tag asset_path(item.images[0].content)
             .itemList--image__sold
               .itemList--image__sold__text
@@ -16,7 +16,7 @@
           .itemList--body__details
             %ul
               %li
-                = item.price
+                = item.price.to_s + "円"
               %li
                 = icon('fas', 'star')
                 0
@@ -25,7 +25,7 @@
     - else
       = link_to new_user_session_path do
         .itemList--image
-          -if item.customer_id.present?
+          -if item.purchase_id.present?
             = image_tag asset_path(item.images[0].content)
             .itemList--image__sold
               .itemList--image__sold__text
@@ -38,7 +38,7 @@
           .itemList--body__details
             %ul
               %li
-                = item.price
+                = item.price.to_s + "円"
               %li
                 = icon('fas', 'star')
                 0

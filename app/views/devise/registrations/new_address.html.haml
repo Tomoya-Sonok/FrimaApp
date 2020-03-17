@@ -1,0 +1,51 @@
+= render partial: "items/header"
+.single-container
+  .single-container__single-main
+    .single-container__single-main__l-single-container
+      .single-container__single-main__l-single-container__l-single-head-registration
+        住所登録
+      .single-container__single-main__l-single-container__l-single-head-registration-form
+        .single-container__single-main__l-single-container__l-single-head-registration-form__l-single-content
+          = form_for @address do |f|
+            = render "devise/shared/error_messages", resource: @address
+
+            .field
+              = f.label :郵便番号, class:'label-weight'
+              %span.need
+                必須
+              %br/
+              = f.text_field :postal_code, autofocus: true, autocomplete: "postal_code", class: "imput-box"
+
+            .field
+              = f.label :都道府県, class:'label-weight'
+              %span.need
+                必須
+              %br/
+              = f.text_field  :prefecture, autofocus: true, autocomplete: "prefecture", class: "imput-box"
+       
+            .field
+              = f.label :住所, class:'label-weight'
+              %span.need
+                必須
+              %br/
+              = f.text_field :city, autofocus: true, autocomplete: "city", class: "imput-box"
+
+            .field
+              = f.label :番地, class:'label-weight'
+              %span.need
+                必須
+              %br/
+              = f.text_field :number, autofocus: true, autocomplete: "number", placeholder: '1', class: "imput-box"
+              
+            .field
+              = f.label :マンション名, class:'label-weight'
+              %br/
+              = f.text_field :building, autofocus: true, autocomplete: "building", class: "imput-box"
+
+            .actions
+              = f.submit "登録"
+          = render "devise/shared/links"
+= render partial: "items/footer"
+
+
+

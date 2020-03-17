@@ -1,4 +1,6 @@
 = render partial: "items/header"
+- breadcrumb :card_show
+= render "layouts/breadcrumbs"
 .confirm
   .confirm__main
     .content
@@ -19,6 +21,6 @@
                 .container-card__title__card-info__btn
                   = form_tag(delete_card_index_path, method: :post, id: 'charge-form',  name: "inputForm") do
                     %input{ type: "hidden", name: "card_id", value: "" }
-                    %button 変更する
+                    %button 削除する
 = render partial: "items/footer"
 

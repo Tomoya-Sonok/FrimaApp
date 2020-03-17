@@ -28,7 +28,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
+gem 'mini_magick', '~> 4.8'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -37,7 +37,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'ancestry'
-
+gem 'gretel'
 
 
 group :development, :test do
@@ -80,6 +80,8 @@ gem "font-awesome-sass"
 gem 'devise'
 gem 'payjp'
 gem "jquery-rails"
-gem 'dotenv-rails'
-gem 'jquery-rails' 
+gem 'dotenv-rails' 
 gem 'jquery-ui-rails'
+gem 'rspec-rails'
+gem 'carrierwave'
+

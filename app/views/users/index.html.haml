@@ -1,3 +1,6 @@
+= render partial: "items/header"
+- breadcrumb :mypage
+= render "layouts/breadcrumbs"
 .container-show 
   .side-bar
     %section.side-bar__group
@@ -48,7 +51,7 @@
   .main
     %section.main__group
       %h2.main__group__title
-        〇〇さんのマイページ
+        =@user.nickname + "さん"
     %section.main__table
       %h2.main__table__header
         重要なお知らせ
@@ -64,7 +67,5 @@
         出品した商品
       %li.main__table__list
         222を出品しました
-        
+= render partial: "items/footer"
 
-
-    

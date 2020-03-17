@@ -11,7 +11,7 @@
       %h2.side-bar__group__title
         商品を出品する
       %li.side-bar__group__list
-        = link_to "商品を出品する", "#"
+        = link_to "商品を出品する", new_item_path
       %li.side-bar__group__list
         = link_to "出品した商品", "#"
       %li.side-bar__group__list
@@ -44,12 +44,23 @@
         = link_to "ログアウト", "#"
 
   .main-items
-    = form_with model: @item, local:true do |f|
+    = form_with model: @item, local: true do |f|
       .wrapper.image-wrapper
-        - 10.times do
-          = f.label :image, class: "image-wrapper__label" do
-            = image_tag "icon_camera.png", class: "image-wrapper__label__image"
-            = f.file_field :image, class: "image-wrapper__label__file"
+        #image-box.image-wrapper__image-box
+          = f.fields_for :images do |i|
+            .image-wrapper__image-box__js.js-file_group{data:{index: "#{i.index}"}}
+              = i.label :content, class: "image-wrapper__image-box__js__label" do
+                .image-wrapper__image-box__js__label__image.img_field{id: "img_field--#{i.index}", onClick: "$('#file').click()"}
+                  - if @item.images[i.index][:content].present?
+                    = image_tag(f.image.content)
+                  - else
+                    = image_tag 'icon_camera.png', class: "image-wrapper__image-box__js__label__image__url" 
+                = i.file_field :content, class: "image-wrapper__image-box__js__label__file js-file", id: "item_images_attributes_#{i.index}_content"
+              .js-remove
+                %span.js-remove__text
+                  削除
+      
+
       .wrapper.name-wrapper
         %label.wrapper__label
           商品名：
@@ -63,26 +74,28 @@
             ※必須
           = f.text_area :description, placaeholder: "色・素材・重さ・定価・注意点などを書きましょう（1000文字まで）", class: "name-wrapper__description form-control", required: "required", size: "40 x 10"
       .form-separator
-      
+
       .wrapper.category-wrapper
-        %label.wrapper__label#wrapper__label--category
+        = f.label :category_id , class: 'wrapper__label category-wrapper-label', id: "wrapper__label--category" do
           カテゴリー：
           %span.required ※必須
-          .category-wrapper-select
-            .category-wrapper-select__box
-              = f.select :category, @category_parent_array, {}, {class: 'category-wrapper__category form-control', id: 'parent_category'}
+          .category-wrapper-box
+            .category-wrapper-select
+              .category-wrapper-select__box
+                = f.select :parent_name, @category_parent_array, {}, {class: 'category-wrapper__category form-control', id: 'parent_category'}
+
 
       .wrapper.brand-wrapper
         %label.wrapper__label
           ブランド：
-          = f.select :brand_id, @brands.pluck(:name), {include_blank: true, selected: 1}, class: "brand-wrapper__brand form-control"
+          = f.select :brand_id, options_for_select(@brands.map{|b| [b.name, b.id, {}]}), {prompt: "指定なし"}, class: "brand-wrapper__brand form-control"
           
       .wrapper.condition-wrapper
         %label.wrapper__label
           商品の状態：
           %span.required
             ※必須
-          = f.select :condition, Item.conditions.keys, {include_blank: true, selected: 1}, {class: "condition-wrapper__condition form-control", required: "required"}
+          = f.select :condition, Item.conditions.keys, {prompt: "指定なし", selected: 1}, {class: "condition-wrapper__condition form-control", required: "required"}
       .form-separator
 
       .wrapper.fee-wrapper
@@ -90,20 +103,20 @@
           配送料の負担：
           %span.required
             ※必須
-          = f.select :fee, Item.fees.keys, { include_blank: true, selected: 1}, class: "fee-wrapper__fee form-control", required: "required"
+          = f.select :fee, Item.fees.keys, { prompt: "", selected: 1}, class: "fee-wrapper__fee form-control", required: "required"
       
       .wrapper.shipping_days-wrapper
         %label.wrapper__label
           発送日の目安：
           %span.required
             ※必須
-          = f.select :shipping_days, Item.shipping_days.keys, { include_blank: true, selected: 1 }, class: "shipping_days-wrapper__shipping-days form-control", required: "required"
+          = f.select :shipping_days, Item.shipping_days.keys, {prompt: "", selected: 1}, class: "shipping_days-wrapper__shipping-days form-control", required: "required"
       .wrapper.area-wrapper
         %label.wrapper__label
           発送元の地域：
           %span.required
             ※必須
-          = f.select :area, Item.prefectures.keys, { include_blank: true, selected: 1}, class: "area-wrapper__area form-control", required: "required"
+          = f.select :area, Item.prefectures.keys, {prompt: 1, selected: 1}, class: "area-wrapper__area form-control", required: "required"
       .form-separator
 
       .wrapper.price-wrapper
@@ -111,11 +124,10 @@
           価格：
           %span.required
             ※必須
-          = f.text_field :price, class: "price-wrapper__price form-control", required: "required"
+          = f.number_field :price, class: "price-wrapper__price form-control", required: "required"
 
       .wrapper.submit-wrapper
         = f.submit "出品する", class: "btn submit-wrapper__submit-btn"
-          
 
 
 
